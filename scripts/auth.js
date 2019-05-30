@@ -54,10 +54,14 @@ signupForm.addEventListener('submit', (e) => {
   // get user info
   const email = signupForm['signup-email'].value;
   const password = signupForm['signup-password'].value;
+  const emailDomain = email.replace(/.*@/, "");
 
   // sign up user
   auth.createUserWithEmailAndPassword(email, password).then(cred => {
-    return db.collection('users').doc(cred.user.uid).set({
+    db.collection('organizations').doc(emailDomain).set({
+      domain: emailDomain
+    });
+    return db.collection('organizations').doc(emailDomain).collection('users').doc(cred.user.uid).set({
       bio: signupForm['signup-bio'].value 
     });
   }).then(() => {

@@ -11,14 +11,14 @@ const setupUI = (user) => {
       adminItems.forEach(item => item.style.display = 'block');
     }
     // account info
-    db.collection('users').doc(user.uid).get().then(doc => {
-      const html = `
-      <div>Logged in as ${user.email}</div>
-      <div>${doc.data().bio}</div>
-      <div class="pink-text">${user.admin ? 'Admin' : ''}</div>
-      `;
-      accountDetails.innerHTML = html;
-    })
+    // db.collection('users').doc(user.uid).get().then(doc => {
+    //   const html = `
+    //   <div>Logged in as ${user.email}</div>
+    //   <div>${doc.data().bio}</div>
+    //   <div class="pink-text">${user.admin ? 'Admin' : ''}</div>
+    //   `;
+    //   accountDetails.innerHTML = html;
+    // })
     // toggle UI elements
     loggedInLinks.forEach(item => item.style.display = 'block');
     loggedOutLinks.forEach(item => item.style.display = 'none');
