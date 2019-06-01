@@ -6,21 +6,25 @@ adminForm.addEventListener('submit', (e) => {
   const addAdminRole = functions.httpsCallable('addAdminRole');
   addAdminRole({ email:adminEmail }).then(result => {
     console.log(result);
+    adminForm.reset();
   });
 });
 
 // listen for auth status changes
 auth.onAuthStateChanged(user => {
-  console.log(user);
   if (user) {
     user.getIdTokenResult().then(idTokenResult => {
       user.admin = idTokenResult.claims.admin;
+      user.organization = user.email.replace(/.*@/, "");
       setupUI(user);
-    })
-    db.collection('announcements').onSnapshot(snapshot => {
-      setupAnnouncements(snapshot.docs);
-    }, err => {
-      console.log(err.message)
+      return true;
+    }).then(() => {
+      db.collection('organizations').doc(user.organization).collection('announcements').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+        console.log(snapshot.docs);
+        setupAnnouncements(snapshot.docs);
+      }, err => {
+        console.log(err.message)
+      });
     });
   } else {
     setupUI();
@@ -32,10 +36,10 @@ auth.onAuthStateChanged(user => {
 const createForm = document.querySelector('#create-form');
 createForm.addEventListener('submit', (e) => {
   e.preventDefault();
-
-  db.collection('announcements').add({
+  db.collection('organizations').doc(auth.currentUser.organization).collection('announcements').add({
     title: createForm['title'].value,
-    content: createForm['content'].value
+    content: createForm['content'].value,
+    createdAt: firebase.firestore.Timestamp.fromDate(new Date())
   }).then(() => {
     // close modal and reset form
     const modal = document.querySelector('#modal-create');
