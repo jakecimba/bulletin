@@ -1,4 +1,4 @@
 # bulletin
 ### This is bulletin. The most useful new tab experience ever made.<br/>
-Created with love by John and Jake Cimbalista.
+Created with love by John and Jake Cimbalista.<br/>
 This project is in progress.
